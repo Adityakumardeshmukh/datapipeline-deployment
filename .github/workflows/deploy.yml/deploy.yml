@@ -1,0 +1,42 @@
+name: Deploy Cloud Function and Airflow DAGs
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+      actions: read
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Authenticate to GCP using OIDC
+      id: auth
+      uses: google-github-actions/auth@v0.5.3
+      with:
+        workload_identity_provider: 'projects/179681486053/locations/global/workloadIdentityPools/github-pool/providers/github-actions'
+        service_account: 'github-service@cicd-gcp-424408.iam.gserviceaccount.com'
+
+    - name: Configure Google Cloud SDK
+      run: gcloud config set project 179681486053
+
+    - name: Deploy Cloud Function
+      run: |
+        gcloud functions deploy vendor-function \
+          --runtime python39 \
+          --trigger-topic vendor-topic \
+          --entry-point hello_world \
+          --source cloud_functions/vendor \
+          --region us-central1
+
+    - name: Deploy Airflow DAG
+      run: |
+        gsutil cp dags/vendor/dag.py gs://vendor-bucket-cicd-gcp-424408/dags/vendor/dag.py
