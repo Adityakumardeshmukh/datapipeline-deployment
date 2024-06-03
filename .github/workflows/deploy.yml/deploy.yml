@@ -1,9 +1,11 @@
-name: Deploy Cloud Function and Airflow DAGs
+name: Deploy Cloud Function and Airflow DAG
 
 on:
   push:
     branches:
       - main
+    paths:
+      - '**/*.py'
 
 jobs:
   deploy:
@@ -33,7 +35,7 @@ jobs:
         gcloud functions deploy vendor-function \
           --runtime python39 \
           --trigger-topic vendor-topic \
-          --entry-point hello_world \
+          --entry-point hello_pubsub \
           --source cloud_functions/vendor \
           --region us-central1
 
