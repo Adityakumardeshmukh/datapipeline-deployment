@@ -1,0 +1,6 @@
+create gcs 
+create pubsub trigger 
+whenwver csv uploaded pubsub should trigger
+create big quesry data set 
+create cloud function trigger should pubsub
+in cloud fun python code should read csv from gsc dump data into bigquery 

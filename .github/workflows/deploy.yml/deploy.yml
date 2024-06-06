@@ -32,13 +32,15 @@ jobs:
 
     - name: Deploy Cloud Function
       run: |
+        cd cloud_function
+        ./zip_function.sh
         gcloud functions deploy vendor-function \
           --runtime python39 \
           --trigger-topic vendor-topic \
-          --entry-point hello_pubsub \
-          --source cloud_functions/vendor \
+          --entry-point process_csv \
+          --source . \
           --region us-central1
 
     - name: Deploy Airflow DAG
       run: |
-        gsutil cp dags/vendor/dag.py gs://vendor-bucket-cicd-gcp-424408/dags/vendor/dag.py
+        gsutil cp airflow/dags/dag.py gs://vendor-bucket-cicd-gcp-424408/dags/dag.py

@@ -1,5 +1,0 @@
-[
-    {"name": "name", "type": "STRING", "mode": "NULLABLE"},
-    {"name": "age", "type": "INTEGER", "mode": "NULLABLE"}
-  ]
-  
